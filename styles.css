@@ -18,13 +18,13 @@
 }
 
 html {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /* Телефон — компактно, весь месяц на экране */
 @media (max-width: 480px) {
   html {
-    font-size: 11px;
+    font-size: 13px;
   }
 }
 
@@ -64,7 +64,7 @@ body {
 
 .header h1 {
   margin: 0 0 0.4rem 0;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -78,7 +78,7 @@ body {
 
 .month-nav h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   flex: 1;
   text-align: center;
@@ -129,11 +129,11 @@ body {
 .date-header {
   padding: 0.4rem 0.55rem;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .date-header .day-name {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 500;
   opacity: 0.95;
 }
@@ -156,7 +156,7 @@ body {
 
 .role-label {
   flex-shrink: 0;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   min-width: 3.8em;
 }
@@ -165,7 +165,7 @@ body {
   flex: 1;
   min-height: 2.1rem;
   padding: 0.35rem 1.6rem 0.35rem 0.5rem;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   font-weight: 500;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -189,11 +189,11 @@ body {
     gap: 0.3rem;
   }
   .date-header {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.7rem;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.8rem;
   }
   .date-header .day-name {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
   }
   .roles-list {
     padding: 0.2rem 0.35rem;
@@ -202,12 +202,12 @@ body {
     padding: 0.15rem 0;
   }
   .role-label {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     min-width: 3.2em;
   }
   .role-row select {
-    min-height: 1.75rem;
-    font-size: 0.7rem;
+    min-height: 1.85rem;
+    font-size: 0.82rem;
     padding: 0.25rem 1.3rem 0.25rem 0.35rem;
   }
   .role-row-multi .backing-selects select {
@@ -241,6 +241,7 @@ body {
 
 .role-row-multi .role-label {
   min-width: 2.2em;
+  font-size: 0.8rem;
 }
 
 .role-row-multi .backing-selects select {
@@ -257,16 +258,16 @@ body {
 .empty-hint {
   margin: 1rem;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
   text-align: center;
 }
 
 /* Buttons */
 .btn {
-  padding: 0.4rem 0.8rem;
+  padding: 0.45rem 0.9rem;
   border-radius: 6px;
   border: none;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
   background: var(--accent);
@@ -347,12 +348,12 @@ body {
 
 .modal-content h2 {
   margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .modal-hint {
   margin: 0 0 1rem 0;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
 }
 
@@ -364,12 +365,12 @@ body {
 
 .participants-input input {
   flex: 1;
-  padding: 0.5rem 0.75rem;
+  padding: 0.55rem 0.8rem;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .participants-input input:focus {
