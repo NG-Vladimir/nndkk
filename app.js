@@ -47,7 +47,10 @@ function saveParticipants() {
 function loadSchedule() {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.schedule);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const data = JSON.parse(saved);
+      return data && typeof data === 'object' ? data : {};
+    }
   } catch (_) {}
   return {};
 }
@@ -102,13 +105,13 @@ function getAssignment(dateKey, roleId) {
 
 function setAssignment(dateKey, roleId, value, index) {
   if (!schedule[dateKey]) schedule[dateKey] = {};
-  if (roleId === 'backing') {
-    let arr = Array.isArray(schedule[dateKey][roleId]) ? schedule[dateKey][roleId] : [];
+  if (roleId === 'backing' && typeof index === 'number' && index >= 0 && index < 3) {
+    let arr = Array.isArray(schedule[dateKey][roleId]) ? [...schedule[dateKey][roleId]] : [];
     if (typeof schedule[dateKey][roleId] === 'string') arr = [schedule[dateKey][roleId]];
     while (arr.length < 3) arr.push('');
     arr[index] = value || '';
     schedule[dateKey][roleId] = arr;
-  } else {
+  } else if (roleId !== 'backing') {
     schedule[dateKey][roleId] = value || null;
   }
   saveSchedule();
@@ -182,21 +185,26 @@ function renderBlocksGrid(dates) {
 }
 
 function bindSelects(container) {
+  if (!container) return;
   container.querySelectorAll('select').forEach(sel => {
     const key = sel.dataset.date;
     const roleId = sel.dataset.role;
-    const index = sel.dataset.index !== undefined ? parseInt(sel.dataset.index, 10) : null;
+    const hasIndex = sel.hasAttribute('data-index');
+    const index = hasIndex ? parseInt(sel.dataset.index, 10) : -1;
     const role = ROLES.find(r => r.id === roleId);
     let val;
-    if (roleId === 'backing' && index !== null) {
+    if (roleId === 'backing' && hasIndex && index >= 0) {
       const arr = getAssignment(key, 'backing');
       val = Array.isArray(arr) && arr[index] !== undefined ? arr[index] : '';
     } else {
-      val = getAssignment(key, roleId) ?? role?.default ?? '';
+      val = getAssignment(key, roleId);
+      if (val == null && role) val = role.default || '';
     }
-    sel.value = val || '';
+    try {
+      sel.value = val || '';
+    } catch (_) {}
     sel.addEventListener('change', () => {
-      if (roleId === 'backing' && index !== null) {
+      if (roleId === 'backing' && hasIndex && index >= 0) {
         setAssignment(key, roleId, sel.value || null, index);
       } else {
         setAssignment(key, roleId, sel.value || null);
@@ -250,34 +258,39 @@ function renderParticipantsModal() {
 }
 
 function init() {
-  const savedMonth = localStorage.getItem(STORAGE_KEYS.lastMonth);
-  if (savedMonth) {
-    const [y, m] = savedMonth.split('-').map(Number);
-    currentDate = new Date(y, m - 1, 1);
-  }
+  try {
+    const savedMonth = localStorage.getItem(STORAGE_KEYS.lastMonth);
+    if (savedMonth) {
+      const parts = savedMonth.split('-').map(Number);
+      if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        currentDate = new Date(parts[0], parts[1] - 1, 1);
+      }
+    }
 
-  document.getElementById('prevMonth').addEventListener('click', () => {
+    const prevBtn = document.getElementById('prevMonth');
+  const nextBtn = document.getElementById('nextMonth');
+  if (prevBtn) prevBtn.addEventListener('click', () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     localStorage.setItem(STORAGE_KEYS.lastMonth, `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`);
     renderMonth();
   });
-
-  document.getElementById('nextMonth').addEventListener('click', () => {
+  if (nextBtn) nextBtn.addEventListener('click', () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     localStorage.setItem(STORAGE_KEYS.lastMonth, `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`);
     renderMonth();
   });
 
-  document.getElementById('manageParticipants').addEventListener('click', () => {
+  const manageBtn = document.getElementById('manageParticipants');
+  if (manageBtn) manageBtn.addEventListener('click', () => {
     document.getElementById('participantsModal').classList.add('is-open');
     renderParticipantsModal();
   });
-
-  document.getElementById('closeParticipants').addEventListener('click', () => {
+  const closeBtn = document.getElementById('closeParticipants');
+  if (closeBtn) closeBtn.addEventListener('click', () => {
     document.getElementById('participantsModal').classList.remove('is-open');
   });
-
-  document.getElementById('participantsModal').addEventListener('click', e => {
+  const modal = document.getElementById('participantsModal');
+  if (modal) modal.addEventListener('click', e => {
     if (e.target.classList.contains('modal')) {
       e.target.classList.remove('is-open');
     }
@@ -285,8 +298,7 @@ function init() {
 
   const addBtn = document.getElementById('addParticipant');
   const input = document.getElementById('newParticipant');
-
-  addBtn.addEventListener('click', () => {
+  if (addBtn) addBtn.addEventListener('click', () => {
     const name = input.value.trim();
     if (!name || participants.includes(name)) return;
     participants.push(name);
@@ -296,12 +308,18 @@ function init() {
     renderParticipantsModal();
     renderMonth();
   });
-
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') addBtn.click();
+  if (input) input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && addBtn) addBtn.click();
   });
 
   renderMonth();
+  } catch (e) {
+    console.error('Init error:', e);
+  }
 }
 
-init();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

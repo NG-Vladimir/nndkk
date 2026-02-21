@@ -1,4 +1,4 @@
-const CACHE_NAME = 'grafyk-v1';
+const CACHE_NAME = 'grafyk-v2';
 const ASSETS = ['./', './index.html', './styles.css', './app.js', './manifest.json'];
 
 self.addEventListener('install', (e) => {
