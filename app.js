@@ -2,7 +2,7 @@ const ROLES = [
   { id: 'leading', label: 'Ведущий' },
   { id: 'backing', label: 'Бэк-вокал', default: 'все' },
   { id: 'piano', label: 'Фоно' },
-  { id: 'drums', label: 'Барабаны' },
+  { id: 'drums', label: 'Барабаны', default: 'Вова' },
   { id: 'guitar', label: 'Гитара' }
 ];
 
@@ -91,17 +91,31 @@ function setAssignment(dateKey, roleId, value) {
   saveSchedule();
 }
 
+function getOptionsForRole(role, dateKey) {
+  const def = role.default;
+  const assigned = getAssignment(dateKey, role.id);
+  let baseOpts = participants.slice();
+  if (assigned && !baseOpts.includes(assigned) && assigned !== def) {
+    baseOpts.push(assigned);
+    baseOpts.sort();
+  }
+  if (def) {
+    baseOpts = baseOpts.filter(p => p !== def);
+    return `<option value="${escapeHtml(def)}">${escapeHtml(def)}</option>${baseOpts.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('')}`;
+  }
+  return baseOpts.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
+}
+
 function renderDateRows(dates) {
   const month = currentDate.getMonth();
   return dates.map(date => {
     const key = getDateKey(date);
     const dateNum = date.getDate();
+    const dayName = DAY_NAMES[date.getDay()];
 
     const cells = ROLES.map(role => {
       const def = role.default;
-      const optionsList = def
-        ? `<option value="${def}">${def}</option>${participants.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('')}`
-        : participants.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
+      const optionsList = getOptionsForRole(role, key);
 
       return `
         <td>
@@ -115,7 +129,7 @@ function renderDateRows(dates) {
 
     return `
       <tr>
-        <td class="col-date"><span class="date-num">${dateNum} ${MONTH_NAMES[month]}</span></td>
+        <td class="col-date"><span class="date-num">${dateNum}</span> <span class="day-name">${dayName}</span></td>
         ${cells}
       </tr>
     `;
@@ -127,7 +141,8 @@ function bindSelects(container) {
     const key = sel.dataset.date;
     const roleId = sel.dataset.role;
     const role = ROLES.find(r => r.id === roleId);
-    sel.value = getAssignment(key, roleId) ?? role?.default ?? '';
+    const val = getAssignment(key, roleId) ?? role?.default ?? '';
+    sel.value = val || '';
     sel.addEventListener('change', () => setAssignment(key, roleId, sel.value || null));
   });
 }
