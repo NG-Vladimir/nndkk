@@ -75,6 +75,16 @@ function getServiceDates(year, month) {
   return dates.sort((a, b) => a - b);
 }
 
+function filterFutureDates(dates) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return dates.filter(d => {
+    const dCopy = new Date(d);
+    dCopy.setHours(0, 0, 0, 0);
+    return dCopy >= today;
+  });
+}
+
 function splitByDayOfWeek(dates) {
   const sundays = dates.filter(d => d.getDay() === 0);
   const tuesdays = dates.filter(d => d.getDay() === 2);
@@ -153,15 +163,14 @@ function bindSelects(container) {
 function renderMonth() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  const monthTitle = `${MONTH_NAMES[month]} ${year}`;
-  document.getElementById('currentMonth').textContent = monthTitle;
-  document.getElementById('screenshotTitle').textContent = `График служений — ${monthTitle}`;
+  document.getElementById('currentMonth').textContent = `${MONTH_NAMES[month]} ${year}`;
 
-  const dates = getServiceDates(year, month);
+  const allDates = getServiceDates(year, month);
+  const dates = filterFutureDates(allDates);
   const container = document.getElementById('scheduleContent');
 
   if (dates.length === 0) {
-    container.innerHTML = '<p class="empty-hint">В этом месяце нет служений</p>';
+    container.innerHTML = '<p class="empty-hint">Нет предстоящих служений в этом месяце</p>';
     return;
   }
 
@@ -212,17 +221,6 @@ function init() {
     currentDate.setMonth(currentDate.getMonth() + 1);
     localStorage.setItem(STORAGE_KEYS.lastMonth, `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`);
     renderMonth();
-  });
-
-  function toggleScreenshotMode() {
-    document.body.classList.toggle('screenshot-mode');
-    const btn = document.getElementById('screenshotMode');
-    btn.textContent = document.body.classList.contains('screenshot-mode') ? '✕ Закрыть' : '⛶ Весь месяц';
-  }
-
-  document.getElementById('screenshotMode').addEventListener('click', toggleScreenshotMode);
-  document.getElementById('screenshotClose').addEventListener('click', () => {
-    if (document.body.classList.contains('screenshot-mode')) toggleScreenshotMode();
   });
 
   document.getElementById('manageParticipants').addEventListener('click', () => {
