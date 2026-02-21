@@ -3,19 +3,18 @@
 }
 
 :root {
-  --bg: #1a1f2e;
-  --surface: #252b3b;
-  --surface-hover: #2d3548;
-  --accent: #6b8cce;
-  --accent-hover: #7d9dd8;
-  --text: #e8ecf4;
-  --text-muted: #8b95a8;
-  --success: #5cb87a;
-  --danger: #c75c5c;
-  --radius: 8px;
-  --shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
-  --row-sunday: rgba(91, 120, 180, 0.18);
-  --row-tuesday: rgba(255, 255, 255, 0.03);
+  --bg: #ffffff;
+  --surface: #f8f9fa;
+  --surface-hover: #e9ecef;
+  --accent: #4a7bc8;
+  --accent-hover: #3d6ab5;
+  --text: #1a1a1a;
+  --text-muted: #5c6b7a;
+  --success: #2d8a5e;
+  --danger: #c54646;
+  --radius: 10px;
+  --shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
+  --border: #e2e6ea;
 }
 
 html {
@@ -57,16 +56,17 @@ body {
 /* Header */
 .header {
   flex-shrink: 0;
-  padding: 0.5rem 0.75rem;
-  padding-top: max(0.5rem, env(safe-area-inset-top, 0));
+  padding: 0.6rem 0.75rem;
+  padding-top: max(0.6rem, env(safe-area-inset-top, 0));
   background: var(--surface);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border);
 }
 
 .header h1 {
-  margin: 0 0 0.35rem 0;
-  font-size: 1rem;
+  margin: 0 0 0.4rem 0;
+  font-size: 1.05rem;
   font-weight: 600;
+  color: var(--text);
 }
 
 .month-nav {
@@ -78,10 +78,11 @@ body {
 
 .month-nav h2 {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   flex: 1;
   text-align: center;
+  color: var(--text);
 }
 
 /* Main — на весь экран */
@@ -91,11 +92,13 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  background: #f5f6f8;
 }
 
 .schedule-content {
-  padding: 0.4rem;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem;
+  padding-bottom: 0.6rem;
+  background: #f5f6f8;
 }
 
 /* Блоки дат в 2 колонки */
@@ -106,33 +109,33 @@ body {
 }
 
 .date-block {
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow);
 }
 
 .date-block.sunday .date-header {
-  background: linear-gradient(135deg, rgba(91, 120, 180, 0.5), rgba(91, 120, 180, 0.35));
+  background: linear-gradient(135deg, #5b8fd4, #4a7bc8);
   color: #fff;
 }
 
 .date-block.tuesday .date-header {
-  background: linear-gradient(135deg, rgba(70, 90, 120, 0.5), rgba(70, 90, 120, 0.3));
-  color: #e0e8f4;
+  background: linear-gradient(135deg, #5a9b7a, #4a8a68);
+  color: #fff;
 }
 
 .date-header {
-  padding: 0.35rem 0.5rem;
+  padding: 0.4rem 0.55rem;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 .date-header .day-name {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 500;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .roles-list {
@@ -142,9 +145,9 @@ body {
 .role-row {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.2rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  gap: 0.3rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .role-row:last-child {
@@ -160,20 +163,20 @@ body {
 
 .role-row select {
   flex: 1;
-  min-height: 2rem;
-  padding: 0.3rem 1.6rem 0.3rem 0.4rem;
-  font-size: 0.75rem;
+  min-height: 2.1rem;
+  padding: 0.35rem 1.6rem 0.35rem 0.5rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   background: var(--bg);
   color: var(--text);
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%238b95a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%235c6b7a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.35rem center;
+  background-position: right 0.4rem center;
   touch-action: manipulation;
 }
 
@@ -247,7 +250,7 @@ body {
 }
 
 .role-row select option {
-  background: var(--surface);
+  background: var(--bg);
   color: var(--text);
 }
 
@@ -280,12 +283,13 @@ body {
 }
 
 .btn-secondary {
-  background: var(--surface-hover);
+  background: #e9ecef;
   color: var(--text);
+  border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: #dee2e6;
 }
 
 .btn-icon {
@@ -303,9 +307,9 @@ body {
   flex-shrink: 0;
   display: flex;
   gap: 0.5rem;
-  padding: 0.4rem 0.75rem;
-  padding-bottom: max(0.4rem, env(safe-area-inset-bottom, 0));
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.5rem 0.75rem;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0));
+  border-top: 1px solid var(--border);
   background: var(--surface);
 }
 
@@ -330,14 +334,15 @@ body {
 }
 
 .modal-content {
-  background: var(--surface);
+  background: var(--bg);
   border-radius: var(--radius);
   padding: 1.25rem;
   max-width: 400px;
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border);
 }
 
 .modal-content h2 {
@@ -361,7 +366,7 @@ body {
   flex: 1;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
   font-size: 0.9rem;
@@ -382,8 +387,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .participants-list li:last-child {

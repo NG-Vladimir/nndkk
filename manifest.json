@@ -4,8 +4,8 @@
   "description": "Управление расписанием служений по вторникам и воскресеньям",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#2c3e50",
-  "theme_color": "#2c3e50",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "lang": "ru"
 }
