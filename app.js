@@ -75,6 +75,12 @@ function getServiceDates(year, month) {
   return dates.sort((a, b) => a - b);
 }
 
+function splitByDayOfWeek(dates) {
+  const sundays = dates.filter(d => d.getDay() === 0);
+  const tuesdays = dates.filter(d => d.getDay() === 2);
+  return { sundays, tuesdays };
+}
+
 function getAssignment(dateKey, roleId) {
   return schedule[dateKey]?.[roleId] ?? null;
 }
@@ -85,18 +91,10 @@ function setAssignment(dateKey, roleId, value) {
   saveSchedule();
 }
 
-function renderMonth() {
-  const year = currentDate.getFullYear();
+function renderDateRows(dates) {
   const month = currentDate.getMonth();
-  document.getElementById('currentMonth').textContent = `${MONTH_NAMES[month]} ${year}`;
-
-  const dates = getServiceDates(year, month);
-  const tbody = document.getElementById('scheduleBody');
-  tbody.innerHTML = '';
-
-  for (const date of dates) {
+  return dates.map(date => {
     const key = getDateKey(date);
-    const dayName = DAY_NAMES[date.getDay()];
     const dateNum = date.getDate();
 
     const cells = ROLES.map(role => {
@@ -115,21 +113,79 @@ function renderMonth() {
       `;
     }).join('');
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="col-date">${dateNum} <span class="day-name">${dayName}</span></td>
-      ${cells}
+    return `
+      <tr>
+        <td class="col-date"><span class="date-num">${dateNum} ${MONTH_NAMES[month]}</span></td>
+        ${cells}
+      </tr>
     `;
-    tbody.appendChild(tr);
-  }
+  }).join('');
+}
 
-  tbody.querySelectorAll('select').forEach(sel => {
+function bindSelects(container) {
+  container.querySelectorAll('select').forEach(sel => {
     const key = sel.dataset.date;
     const roleId = sel.dataset.role;
     const role = ROLES.find(r => r.id === roleId);
     sel.value = getAssignment(key, roleId) ?? role?.default ?? '';
     sel.addEventListener('change', () => setAssignment(key, roleId, sel.value || null));
   });
+}
+
+function renderMonth() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  document.getElementById('currentMonth').textContent = `${MONTH_NAMES[month]} ${year}`;
+
+  const dates = getServiceDates(year, month);
+  const { sundays, tuesdays } = splitByDayOfWeek(dates);
+  const container = document.getElementById('scheduleContent');
+
+  const tableHeader = `
+    <thead>
+      <tr>
+        <th class="col-date">Дата</th>
+        <th>Ведущий</th>
+        <th>Бэк</th>
+        <th>Фоно</th>
+        <th>Бар</th>
+        <th>Гитара</th>
+      </tr>
+    </thead>
+  `;
+
+  let html = '';
+
+  if (sundays.length > 0) {
+    html += `
+      <div class="schedule-section">
+        <div class="section-header sunday">Воскресенья</div>
+        <div class="schedule-table-wrap sunday">
+          <table class="schedule-table">
+            ${tableHeader}
+            <tbody>${renderDateRows(sundays)}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  if (tuesdays.length > 0) {
+    html += `
+      <div class="schedule-section">
+        <div class="section-header tuesday">Вторники</div>
+        <div class="schedule-table-wrap tuesday">
+          <table class="schedule-table">
+            ${tableHeader}
+            <tbody>${renderDateRows(tuesdays)}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html || '<p class="empty-hint">В этом месяце нет служений</p>';
+  bindSelects(container);
 }
 
 function escapeHtml(s) {
