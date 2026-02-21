@@ -14,8 +14,8 @@
   --danger: #c75c5c;
   --radius: 8px;
   --shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
-  --sunday-bg: rgba(91, 120, 180, 0.15);
-  --tuesday-bg: rgba(100, 140, 120, 0.15);
+  --row-sunday: rgba(91, 120, 180, 0.18);
+  --row-tuesday: rgba(255, 255, 255, 0.03);
 }
 
 html {
@@ -97,47 +97,12 @@ body {
   padding-bottom: 0.75rem;
 }
 
-/* Секции Вс / Вт */
-.schedule-section {
-  margin-bottom: 0.75rem;
-}
-
-.schedule-section:last-child {
-  margin-bottom: 0;
-}
-
-.section-header {
-  padding: 0.4rem 0.6rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.section-header.sunday {
-  background: linear-gradient(135deg, rgba(91, 120, 180, 0.4), rgba(91, 120, 180, 0.2));
-  color: #a8c4f0;
-}
-
-.section-header.tuesday {
-  background: linear-gradient(135deg, rgba(80, 140, 110, 0.4), rgba(80, 140, 110, 0.2));
-  color: #8fd4b0;
-}
-
 .schedule-table-wrap {
-  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--surface);
+  border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-top: none;
-}
-
-.schedule-table-wrap.sunday {
-  background: var(--sunday-bg);
-}
-
-.schedule-table-wrap.tuesday {
-  background: var(--tuesday-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .schedule-table {
@@ -155,12 +120,24 @@ body {
 }
 
 .schedule-table th {
-  background: rgba(0, 0, 0, 0.15);
-  font-weight: 500;
+  background: rgba(0, 0, 0, 0.2);
+  font-weight: 600;
   color: var(--text-muted);
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+}
+
+.schedule-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.schedule-table tbody tr.row-sunday {
+  background: var(--row-sunday);
+}
+
+.schedule-table tbody tr.row-tuesday {
+  background: var(--row-tuesday);
 }
 
 .schedule-table tbody tr:last-child td {

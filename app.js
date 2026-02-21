@@ -112,6 +112,7 @@ function renderDateRows(dates) {
     const key = getDateKey(date);
     const dateNum = date.getDate();
     const dayName = DAY_NAMES[date.getDay()];
+    const rowClass = date.getDay() === 0 ? 'row-sunday' : 'row-tuesday';
 
     const cells = ROLES.map(role => {
       const def = role.default;
@@ -128,7 +129,7 @@ function renderDateRows(dates) {
     }).join('');
 
     return `
-      <tr>
+      <tr class="${rowClass}">
         <td class="col-date"><span class="date-num">${dateNum}</span> <span class="day-name">${dayName}</span></td>
         ${cells}
       </tr>
@@ -153,53 +154,34 @@ function renderMonth() {
   document.getElementById('currentMonth').textContent = `${MONTH_NAMES[month]} ${year}`;
 
   const dates = getServiceDates(year, month);
-  const { sundays, tuesdays } = splitByDayOfWeek(dates);
   const container = document.getElementById('scheduleContent');
+
+  if (dates.length === 0) {
+    container.innerHTML = '<p class="empty-hint">В этом месяце нет служений</p>';
+    return;
+  }
 
   const tableHeader = `
     <thead>
       <tr>
         <th class="col-date">Дата</th>
         <th>Ведущий</th>
-        <th>Бэк</th>
+        <th>Бэк-вокал</th>
         <th>Фоно</th>
-        <th>Бар</th>
+        <th>Барабаны</th>
         <th>Гитара</th>
       </tr>
     </thead>
   `;
 
-  let html = '';
-
-  if (sundays.length > 0) {
-    html += `
-      <div class="schedule-section">
-        <div class="section-header sunday">Воскресенья</div>
-        <div class="schedule-table-wrap sunday">
-          <table class="schedule-table">
-            ${tableHeader}
-            <tbody>${renderDateRows(sundays)}</tbody>
-          </table>
-        </div>
-      </div>
-    `;
-  }
-
-  if (tuesdays.length > 0) {
-    html += `
-      <div class="schedule-section">
-        <div class="section-header tuesday">Вторники</div>
-        <div class="schedule-table-wrap tuesday">
-          <table class="schedule-table">
-            ${tableHeader}
-            <tbody>${renderDateRows(tuesdays)}</tbody>
-          </table>
-        </div>
-      </div>
-    `;
-  }
-
-  container.innerHTML = html || '<p class="empty-hint">В этом месяце нет служений</p>';
+  container.innerHTML = `
+    <div class="schedule-table-wrap">
+      <table class="schedule-table">
+        ${tableHeader}
+        <tbody>${renderDateRows(dates)}</tbody>
+      </table>
+    </div>
+  `;
   bindSelects(container);
 }
 
