@@ -1,9 +1,10 @@
 const ROLES = [
   { id: 'leading', label: 'Ведущий' },
-  { id: 'backing', label: 'Бэк-вокал', default: 'все' },
+  { id: 'backing', label: 'Бэк-вокал', multi: 3, default: 'все' },
   { id: 'piano', label: 'Фоно' },
   { id: 'drums', label: 'Барабаны', default: 'Вова' },
-  { id: 'guitar', label: 'Гитара' }
+  { id: 'guitar', label: 'Гитара' },
+  { id: 'bass', label: 'Бас' }
 ];
 
 const MONTH_NAMES = [
@@ -92,12 +93,24 @@ function splitByDayOfWeek(dates) {
 }
 
 function getAssignment(dateKey, roleId) {
-  return schedule[dateKey]?.[roleId] ?? null;
+  const val = schedule[dateKey]?.[roleId];
+  if (roleId === 'backing' && typeof val === 'string' && !val.includes(',')) {
+    return val ? [val] : [];
+  }
+  return val ?? null;
 }
 
-function setAssignment(dateKey, roleId, value) {
+function setAssignment(dateKey, roleId, value, index) {
   if (!schedule[dateKey]) schedule[dateKey] = {};
-  schedule[dateKey][roleId] = value || null;
+  if (roleId === 'backing') {
+    let arr = Array.isArray(schedule[dateKey][roleId]) ? schedule[dateKey][roleId] : [];
+    if (typeof schedule[dateKey][roleId] === 'string') arr = [schedule[dateKey][roleId]];
+    while (arr.length < 3) arr.push('');
+    arr[index] = value || '';
+    schedule[dateKey][roleId] = arr;
+  } else {
+    schedule[dateKey][roleId] = value || null;
+  }
   saveSchedule();
 }
 
@@ -105,11 +118,14 @@ function getOptionsForRole(role, dateKey) {
   const def = role.default;
   const assigned = getAssignment(dateKey, role.id);
   let baseOpts = participants.slice();
-  if (assigned && !baseOpts.includes(assigned) && assigned !== def) {
+  if (assigned) {
+    const arr = Array.isArray(assigned) ? assigned : [assigned];
+    arr.forEach(a => { if (a && !baseOpts.includes(a) && a !== def) baseOpts.push(a); });
+  } else if (assigned && !Array.isArray(assigned) && !baseOpts.includes(assigned) && assigned !== def) {
     baseOpts.push(assigned);
-    baseOpts.sort();
   }
-  if (def) {
+  baseOpts.sort();
+  if (def && role.id !== 'backing') {
     baseOpts = baseOpts.filter(p => p !== def);
     return `<option value="${escapeHtml(def)}">${escapeHtml(def)}</option>${baseOpts.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('')}`;
   }
@@ -124,6 +140,22 @@ function renderDateBlock(date) {
   const blockClass = date.getDay() === 0 ? 'date-block sunday' : 'date-block tuesday';
 
   const roleRows = ROLES.map(role => {
+    if (role.multi === 3 && role.id === 'backing') {
+      const arr = getAssignment(key, 'backing');
+      const vals = Array.isArray(arr) ? arr : [arr || ''];
+      const sel = (i) => `<option value="">—</option><option value="все">все</option>${participants.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('')}`;
+      const cells = [0, 1, 2].map(i => `
+        <select data-date="${key}" data-role="backing" data-index="${i}">
+          ${sel(i)}
+        </select>
+      `).join('');
+      return `
+        <div class="role-row role-row-multi">
+          <span class="role-label">${role.label}:</span>
+          <div class="backing-selects">${cells}</div>
+        </div>
+      `;
+    }
     const def = role.default;
     const optionsList = getOptionsForRole(role, key);
     return `
@@ -153,10 +185,23 @@ function bindSelects(container) {
   container.querySelectorAll('select').forEach(sel => {
     const key = sel.dataset.date;
     const roleId = sel.dataset.role;
+    const index = sel.dataset.index !== undefined ? parseInt(sel.dataset.index, 10) : null;
     const role = ROLES.find(r => r.id === roleId);
-    const val = getAssignment(key, roleId) ?? role?.default ?? '';
+    let val;
+    if (roleId === 'backing' && index !== null) {
+      const arr = getAssignment(key, 'backing');
+      val = Array.isArray(arr) && arr[index] !== undefined ? arr[index] : '';
+    } else {
+      val = getAssignment(key, roleId) ?? role?.default ?? '';
+    }
     sel.value = val || '';
-    sel.addEventListener('change', () => setAssignment(key, roleId, sel.value || null));
+    sel.addEventListener('change', () => {
+      if (roleId === 'backing' && index !== null) {
+        setAssignment(key, roleId, sel.value || null, index);
+      } else {
+        setAssignment(key, roleId, sel.value || null);
+      }
+    });
   });
 }
 

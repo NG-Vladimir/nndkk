@@ -226,6 +226,18 @@ body {
   border-color: var(--accent);
 }
 
+.role-row-multi .backing-selects {
+  display: flex;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.role-row-multi .backing-selects select {
+  flex: 1;
+  min-width: 0;
+}
+
 .role-row select option {
   background: var(--surface);
   color: var(--text);
