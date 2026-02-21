@@ -97,106 +97,93 @@ body {
   padding-bottom: 0.75rem;
 }
 
-.schedule-table-wrap {
+/* Блоки дат в 2 колонки как на скриншоте */
+.blocks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.date-block {
   background: var(--surface);
-  border-radius: var(--radius);
-  overflow-x: auto;
-  overflow-y: visible;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: var(--shadow);
-  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
-.schedule-table {
-  border-collapse: collapse;
-  font-size: 0.82rem;
-  min-width: 100%;
+.date-block.sunday .date-header {
+  background: linear-gradient(135deg, rgba(91, 120, 180, 0.5), rgba(91, 120, 180, 0.35));
+  color: #fff;
 }
 
-.schedule-table.schedule-cols th,
-.schedule-table.schedule-cols td {
-  padding: 0.35rem 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  text-align: center;
-  vertical-align: middle;
+.date-block.tuesday .date-header {
+  background: linear-gradient(135deg, rgba(70, 90, 120, 0.5), rgba(70, 90, 120, 0.3));
+  color: #e0e8f4;
 }
 
-.schedule-table.schedule-cols .col-role {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  min-width: 5.5rem;
-  max-width: 5.5rem;
-  background: rgba(0, 0, 0, 0.25);
-  font-weight: 600;
-  color: var(--text-muted);
+.date-header {
+  padding: 0.5rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.date-header .day-name {
   font-size: 0.7rem;
-  text-align: left;
-  padding-left: 0.5rem;
+  font-weight: 500;
+  opacity: 0.9;
 }
 
-.schedule-table.schedule-cols thead .col-role {
-  background: var(--bg);
+.roles-list {
+  padding: 0.4rem 0.5rem;
 }
 
-.schedule-table.schedule-cols .col-date {
-  min-width: 4.5rem;
-  font-weight: 600;
-  color: var(--text);
+.role-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.schedule-table.schedule-cols .col-date .date-num {
-  font-size: 0.95rem;
+.role-row:last-child {
+  border-bottom: none;
 }
 
-.schedule-table.schedule-cols .col-date .day-name {
-  display: block;
-  font-size: 0.65rem;
+.role-label {
+  flex-shrink: 0;
+  font-size: 0.75rem;
   color: var(--text-muted);
+  min-width: 4.2em;
+}
+
+.role-row select {
+  flex: 1;
+  min-height: 2.4rem;
+  padding: 0.4rem 2rem 0.4rem 0.5rem;
+  font-size: 0.85rem;
   font-weight: 500;
-}
-
-.schedule-table.schedule-cols th.col-sunday,
-.schedule-table.schedule-cols td.col-sunday {
-  background: var(--row-sunday);
-}
-
-.schedule-table.schedule-cols th.col-tuesday,
-.schedule-table.schedule-cols td.col-tuesday {
-  background: var(--row-tuesday);
-}
-
-.schedule-table.schedule-cols select {
-  width: 100%;
-  min-width: 4rem;
-  min-height: 2rem;
-  padding: 0.3rem 1.4rem 0.3rem 0.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
-  background: var(--surface);
+  background: var(--bg);
   color: var(--text);
-  font-size: 0.8rem;
-  font-weight: 500;
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%238b95a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b95a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.4rem center;
+  background-position: right 0.5rem center;
+  touch-action: manipulation;
 }
 
-.schedule-table select option {
-  background: var(--surface);
-  color: var(--text);
-}
-
-.schedule-table.schedule-cols select:focus {
+.role-row select:focus {
   outline: none;
   border-color: var(--accent);
 }
 
-.schedule-table.schedule-cols td {
-  white-space: nowrap;
+.role-row select option {
+  background: var(--surface);
+  color: var(--text);
 }
 
 .empty-hint {

@@ -106,37 +106,37 @@ function getOptionsForRole(role, dateKey) {
   return baseOpts.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
 }
 
-function renderMonthTable(dates) {
-  const month = currentDate.getMonth();
-  const headerCells = dates.map(date => {
-    const dateNum = date.getDate();
-    const dayName = DAY_NAMES[date.getDay()];
-    const colClass = date.getDay() === 0 ? 'col-sunday' : 'col-tuesday';
-    return `<th class="col-date ${colClass}"><span class="date-num">${dateNum}</span> <span class="day-name">${dayName}</span></th>`;
-  }).join('');
+function renderDateBlock(date) {
+  const key = getDateKey(date);
+  const dateNum = date.getDate();
+  const dayName = DAY_NAMES[date.getDay()];
+  const month = MONTH_NAMES[currentDate.getMonth()];
+  const blockClass = date.getDay() === 0 ? 'date-block sunday' : 'date-block tuesday';
 
   const roleRows = ROLES.map(role => {
     const def = role.default;
-    const cells = dates.map(date => {
-      const key = getDateKey(date);
-      const colClass = date.getDay() === 0 ? 'col-sunday' : 'col-tuesday';
-      const optionsList = getOptionsForRole(role, key);
-      return `
-        <td class="${colClass}">
-          <select data-date="${key}" data-role="${role.id}">
-            ${!def ? '<option value="">—</option>' : ''}
-            ${optionsList}
-          </select>
-        </td>
-      `;
-    }).join('');
-    return `<tr><th class="col-role">${role.label}</th>${cells}</tr>`;
+    const optionsList = getOptionsForRole(role, key);
+    return `
+      <div class="role-row">
+        <span class="role-label">${role.label}:</span>
+        <select data-date="${key}" data-role="${role.id}">
+          ${!def ? '<option value="">—</option>' : ''}
+          ${optionsList}
+        </select>
+      </div>
+    `;
   }).join('');
 
   return `
-    <thead><tr><th class="col-role"></th>${headerCells}</tr></thead>
-    <tbody>${roleRows}</tbody>
+    <div class="${blockClass}">
+      <div class="date-header">${dateNum} ${month} <span class="day-name">${dayName}</span></div>
+      <div class="roles-list">${roleRows}</div>
+    </div>
   `;
+}
+
+function renderBlocksGrid(dates) {
+  return dates.map(date => renderDateBlock(date)).join('');
 }
 
 function bindSelects(container) {
@@ -163,13 +163,7 @@ function renderMonth() {
     return;
   }
 
-  container.innerHTML = `
-    <div class="schedule-table-wrap">
-      <table class="schedule-table schedule-cols">
-        ${renderMonthTable(dates)}
-      </table>
-    </div>
-  `;
+  container.innerHTML = `<div class="blocks-grid">${renderBlocksGrid(dates)}</div>`;
   bindSelects(container);
 }
 
