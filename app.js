@@ -106,20 +106,23 @@ function getOptionsForRole(role, dateKey) {
   return baseOpts.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
 }
 
-function renderDateRows(dates) {
+function renderMonthTable(dates) {
   const month = currentDate.getMonth();
-  return dates.map(date => {
-    const key = getDateKey(date);
+  const headerCells = dates.map(date => {
     const dateNum = date.getDate();
     const dayName = DAY_NAMES[date.getDay()];
-    const rowClass = date.getDay() === 0 ? 'row-sunday' : 'row-tuesday';
+    const colClass = date.getDay() === 0 ? 'col-sunday' : 'col-tuesday';
+    return `<th class="col-date ${colClass}"><span class="date-num">${dateNum}</span> <span class="day-name">${dayName}</span></th>`;
+  }).join('');
 
-    const cells = ROLES.map(role => {
-      const def = role.default;
+  const roleRows = ROLES.map(role => {
+    const def = role.default;
+    const cells = dates.map(date => {
+      const key = getDateKey(date);
+      const colClass = date.getDay() === 0 ? 'col-sunday' : 'col-tuesday';
       const optionsList = getOptionsForRole(role, key);
-
       return `
-        <td>
+        <td class="${colClass}">
           <select data-date="${key}" data-role="${role.id}">
             ${!def ? '<option value="">—</option>' : ''}
             ${optionsList}
@@ -127,14 +130,13 @@ function renderDateRows(dates) {
         </td>
       `;
     }).join('');
-
-    return `
-      <tr class="${rowClass}">
-        <td class="col-date"><span class="date-num">${dateNum}</span> <span class="day-name">${dayName}</span></td>
-        ${cells}
-      </tr>
-    `;
+    return `<tr><th class="col-role">${role.label}</th>${cells}</tr>`;
   }).join('');
+
+  return `
+    <thead><tr><th class="col-role"></th>${headerCells}</tr></thead>
+    <tbody>${roleRows}</tbody>
+  `;
 }
 
 function bindSelects(container) {
@@ -161,24 +163,10 @@ function renderMonth() {
     return;
   }
 
-  const tableHeader = `
-    <thead>
-      <tr>
-        <th class="col-date">Дата</th>
-        <th>Ведущий</th>
-        <th>Бэк-вокал</th>
-        <th>Фоно</th>
-        <th>Барабаны</th>
-        <th>Гитара</th>
-      </tr>
-    </thead>
-  `;
-
   container.innerHTML = `
     <div class="schedule-table-wrap">
-      <table class="schedule-table">
-        ${tableHeader}
-        <tbody>${renderDateRows(dates)}</tbody>
+      <table class="schedule-table schedule-cols">
+        ${renderMonthTable(dates)}
       </table>
     </div>
   `;
