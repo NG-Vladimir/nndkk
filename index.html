@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2c3e50">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="График служений — управление расписанием">
+  <title>График служений</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>График служений</h1>
+      <div class="month-nav">
+        <button type="button" class="btn btn-icon" id="prevMonth" aria-label="Предыдущий месяц">←</button>
+        <h2 id="currentMonth">Март 2026</h2>
+        <button type="button" class="btn btn-icon" id="nextMonth" aria-label="Следующий месяц">→</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="schedule-table-wrap">
+        <table class="schedule-table" id="scheduleTable">
+          <thead>
+            <tr>
+              <th class="col-date">Дата</th>
+              <th>Ведущий</th>
+              <th>Бэк</th>
+              <th>Фоно</th>
+              <th>Бар</th>
+              <th>Гитара</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody">
+            <!-- Строки заполняются JS -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <button type="button" class="btn btn-secondary" id="manageParticipants">Участники</button>
+    </footer>
+  </div>
+
+  <!-- Модальное окно участников -->
+  <div class="modal" id="participantsModal">
+    <div class="modal-content">
+      <h2>Участники команды</h2>
+      <p class="modal-hint">Добавляйте и удаляйте участников. Они появятся в выпадающих списках при назначении ролей.</p>
+      <div class="participants-input">
+        <input type="text" id="newParticipant" placeholder="Имя участника" maxlength="50">
+        <button type="button" class="btn" id="addParticipant">Добавить</button>
+      </div>
+      <ul class="participants-list" id="participantsList"></ul>
+      <button type="button" class="btn btn-secondary modal-close" id="closeParticipants">Закрыть</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
