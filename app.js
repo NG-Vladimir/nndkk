@@ -1,6 +1,6 @@
 const ROLES = [
   { id: 'leading', label: 'Ведущий' },
-  { id: 'backing', label: 'Бэк-вокал', multi: 3, default: 'все' },
+  { id: 'backing', label: 'Бэк', multi: 3, default: 'все' },
   { id: 'piano', label: 'Фоно' },
   { id: 'drums', label: 'Барабаны', default: 'Вова' },
   { id: 'guitar', label: 'Гитара' },
