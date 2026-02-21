@@ -153,7 +153,9 @@ function bindSelects(container) {
 function renderMonth() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  document.getElementById('currentMonth').textContent = `${MONTH_NAMES[month]} ${year}`;
+  const monthTitle = `${MONTH_NAMES[month]} ${year}`;
+  document.getElementById('currentMonth').textContent = monthTitle;
+  document.getElementById('screenshotTitle').textContent = `График служений — ${monthTitle}`;
 
   const dates = getServiceDates(year, month);
   const container = document.getElementById('scheduleContent');
@@ -210,6 +212,17 @@ function init() {
     currentDate.setMonth(currentDate.getMonth() + 1);
     localStorage.setItem(STORAGE_KEYS.lastMonth, `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`);
     renderMonth();
+  });
+
+  function toggleScreenshotMode() {
+    document.body.classList.toggle('screenshot-mode');
+    const btn = document.getElementById('screenshotMode');
+    btn.textContent = document.body.classList.contains('screenshot-mode') ? '✕ Закрыть' : '⛶ Весь месяц';
+  }
+
+  document.getElementById('screenshotMode').addEventListener('click', toggleScreenshotMode);
+  document.getElementById('screenshotClose').addEventListener('click', () => {
+    if (document.body.classList.contains('screenshot-mode')) toggleScreenshotMode();
   });
 
   document.getElementById('manageParticipants').addEventListener('click', () => {
